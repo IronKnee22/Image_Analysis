@@ -315,7 +315,7 @@ O(n<sup>2</sup>) * log N
 # 39. Formulujte Shannonovu (též Nyquistovu, Kotelnikovu) větu o vzorkování pro jednodušší případ jednorozměrného signálu. Vysvětlete (stačí neformálně, obrázek pomůže), jak se věta o vzorkování dokazuje (nápověda: frekvenční spektra).✅
 Formulace: Abychom mohli signál z digitálních vzorků bezchybně vrátit zpět do analogové podoby, musí být vzorkovací frekvence větší než dvojnásobek nejvyšší frekvence v signálu.
 
-![41](imgs/41.png)
+![39](imgs/39.png)
 
 # 40. (a) Televizní signál o 25 snímcích za sekundu je vzorkován do matice 500 × 500 pixelů ve 256 jasových úrovních. Vypočtěte nejmenší vzorkovací frekvenci (v kHz), kterou musí být signál v digitizéru (angl. frame grabber) vzorkován? (b) Jak se jmenuje věta, podle které jste výpočet realizovali? Naznačte myšlenku jejího odvození (stačí úvaha, vzorce nejsou nezbytně nutné).✅
 a) Vypočtěte nejmenší vzorkovací frekvenci (v kHz). • 6 250 kHz (Výpočet: 500 pixelů × 500 pixelů × 25 Hz = 6 250 000 Hz = 6 250 kHz. Počet jasových úrovní nemá na vzorkovací frekvenci vliv, jen na datový tok).
@@ -323,6 +323,191 @@ a) Vypočtěte nejmenší vzorkovací frekvenci (v kHz). • 6 250 kHz (Výpoče
 b) Jak se jmenuje věta a naznačte myšlenku odvození. 
 - Shannon-Kotělnikovův teorém (nebo Nyquist-Shannonova věta). 
 - Tento teorém se dokazuje přes frekvenční spektra. Z Fourierovy transformace vyplývá, že vzorkování v čase způsobí, že se spektrum signálu periodicky opakuje na násobcích vzorkovací frekvence fvz​. Aby se tato kopie spekter vzájemně nepřekrývala (nenastal aliasing), musí být vzorkovací frekvence minimálně 2krát vyšší než nejvyšší frekvence obsažená v signálu (fmax​).
+
+# 41. Na obrázku je vlevo uveden vstupní intenzitní obraz a vpravo jeho Fourierovo frekvenční spektrum vyjádřeno jako intenzitní obraz - tmavé pixely odpovídají vysokým spektrálním hodnotám. Ve spektru jsou patrné dva tmavé kříže. První výraznější se kryje se svislým a vodorovným směrem. Druhý méně výrazný kříž je proti výraznému kříži mírně pootočen proti směru hodinových ručiček. Vysvětlete, jakým jevům v intenzitním obrázku kříže odpovídají.
+![41](imgs/41.png)
+
+**První výrazný kříž** - předpokládá že se obraz neustále dokola opakuje takže jenže levý okraj nenavazuje na pravý okraj
+
+**Druhý kříž** Odpovídá římsám a věžím katedrály
+
+# 42. Lineární ortogonální integrální transformace s výhodou používají pro reprezentaci signálů a obrazů (např. Fourierova, kosínová, metoda hlavních směrů) a pro jejich zpracování. Vysvětlete jaký je princip těchto metod. Zmiňte dva příklady použití.
+**Princip**: Metoda vezme složitý signál (obraz) a rozloží ho na součet jednoduchých, na sobě nezávislých (ortogonálních) vln.
+
+**Výhoda**: V tomto rozloženém stavu se mnohem lépe pozná, co je důležitá informace (tvar objektu) a co je zbytečnost (šum, neviditelné detaily).
+
+**např**. komprese obrazu, filtrace
+
+# 43. Roztřiďte metody předzpracování obrazu do čtyř skupin podle velikosti zpracovávaného okolí právě zpracovávaného pixelu. U každé skupiny uveďte alespoň jeden příklad.
+
+
+| Skupina (Metoda) | Velikost okolí | Příklad operace |
+| --- | --- | --- |
+| **1. Bodové operace** |  pixel (žádné okolí) | Změna jasu, kontrastu, prahování, gamma korekce. |
+| **2. Lokální operace** | Malé okolí (např. ) | Vyhlazování, ostření (konvoluce), detekce hran, medián. |
+| **3. Globální operace** | Celý obraz | Fourierova transformace, ekvalizace histogramu. |
+| **4. Geometrické transformace** | Teoreticky bod, prakticky okolí* | Rotace, změna měřítka, zkosení. |
+
+# 44. Vysvětlete princip jasových korekcí (obvykle se používají k odstranění systematických vad při snímání obrazu), když se uvažuje multiplikativní model poruchy. Vyjádřete matematicky.
+**Princip**: Cílem je odstranit systematické vady, jako je vinětace (ztmavnutí v rozích) nebo nerovnoměrná citlivost senzoru (špína na čipu, variabilita pixelů). Protože tyto vady mění jas násobením (např. v rohu je citlivost jen 80 %), musíme je opravit dělením.
+
+# 45. Pro vyjádření afinních geometrických transformací obrazu se s výhodou využívají homogenní souřadnice. Vysvětlete, co jsou homogenní souřadnice. Jakou výhodu pro vyjádření afinních geometrických transformací přinášejí. (nápověda: vzpomeňte si na jazyk pro popis stránky PostScript).
+**Co to je**: Přidáme k souřadnicím jedničku ([x,y]→[x,y,1]).
+
+**Proč**: Abychom mohli posunutí (translaci) zapsat jako násobení maticí.
+
+**Výhoda**: Všechny operace (rotace, posun, škálování) jsou teď stejného typu (násobení). Můžeme je všechny "smíchat" (vynásobit) do jedné výsledné matice a tu pak použít naráz.
+
+# 46. Popište myšlenku odvození, které poskytne trasformaci vedoucí k ekvalizovanému histogramu.
+Myšlenka odvození v kostce:
+
+**Cíl**: Chceme, aby ve výsledném obrázku byly všechny barvy zastoupeny stejně (chceme plochý histogram).
+
+**Úvaha**:
+- Představ si, že vezmeš konkrétní pixel, který má ve starém obraze nějakou jasovou hodnotu (třeba šedou 100).
+- Zjistíš, že 25 % všech pixelů v obraze je tmavších nebo stejných jako tento pixel. (Je to tedy "25. percentil").
+- Aby byl nový histogram rovnoměrný, musí tento pixel v novém obraze dostat hodnotu 25 % maximálního jasu (tedy čtvrtinu rozsahu černé a bílé).
+
+**Závěr (Odvození)**:
+- Když tohle uděláš pro každý pixel, zjistíš, že vlastně jen sčítáš počty pixelů od černé až po aktuální hodnotu.
+- To sčítání se matematicky jmenuje KUMULATIVNÍ HISTOGRAM.
+
+# 47. Vysvětlete myšlenku ekvalizace histogramu. K čemu se ekvalizace histogramu používá ve zpracování obrazu?
+
+Myšlenka odvození v kostce:
+
+**Cíl**: Chceme, aby ve výsledném obrázku byly všechny barvy zastoupeny stejně (chceme plochý histogram).
+
+**Úvaha**:
+- Představ si, že vezmeš konkrétní pixel, který má ve starém obraze nějakou jasovou hodnotu (třeba šedou 100).
+- Zjistíš, že 25 % všech pixelů v obraze je tmavších nebo stejných jako tento pixel. (Je to tedy "25. percentil").
+- Aby byl nový histogram rovnoměrný, musí tento pixel v novém obraze dostat hodnotu 25 % maximálního jasu (tedy čtvrtinu rozsahu černé a bílé).
+
+**Závěr (Odvození)**:
+- Když tohle uděláš pro každý pixel, zjistíš, že vlastně jen sčítáš počty pixelů od černé až po aktuální hodnotu.
+- To sčítání se matematicky jmenuje KUMULATIVNÍ HISTOGRAM.
+
+Ekvalizace histogramu může vést ke zřetelnějšímu znázornění struktur u rentgenových snímků kostí a ke zvýraznění detailů fotografií
+
+# 48. Vysvětlete, proč ekvalizovaný histogram diskrétního obrazu není obvykle plochý? V ideálním případě bychom to očekávali.
+**Hlavní důvod**: Diskrétní povaha dat (nemožnost štěpení hodnot). V ideálním spojitém případě by ekvalizace fungovala dokonale. V digitálním obraze ale pracujeme s diskrétními hodnotami (0–255).
+
+**Problém**: Pokud má v původním obraze velké množství pixelů stejnou hodnotu jasu (např. hodně pixelů má jas 50 – vysoký sloupec v histogramu), algoritmus musí všechny tyto pixely přesunout na jednu novou hodnotu (např. na 120).
+
+**Nemožnost rozdělení**: Algoritmus nemůže říct: "Polovinu pixelů s jasem 50 dám na 120 a druhou polovinu na 121", aby to vyhladil. Musí je přesunout jako blok.
+
+**Výsledek**: Původní vysoké sloupce (peaky) v histogramu zůstanou vysoké, jen se posunou jinam, a mezi nimi vzniknou prázdné mezery (nulové hodnoty). Výsledný histogram je tedy "roztrhaný", nikoliv plochý.
+
+# 49. Obecně formulovaná transformace jasové stupnice T nahradí vstupní jas p novým jasem q = T(p). Předpokládejme obvyklý 8 bitový šedotónový obraz. Bude počet jasových úrovní ve výstupním obraze vždy stejný, jako ve vstupním obraze? Vysvětlete a uveďte příklady.
+Nemusí být, záleží na konkrétní transformaci, například když transformace zahrnuje:
+**Oříznutí**:
+- Pokud transformace zahrnuje oříznutí hodnot mimo určitý rozsah, může to vést k omezení počtu jasových úrovní. Například, pokud transformace nastaví všechny hodnoty pod určitým prahem na nulu nebo maximální hodnotu, dojde k redukci počtu úrovní.
+
+**Kvantizace**:
+- Pokud transformace provádí kvantizaci (zaokrouhlování) hodnot jasových úrovní, může to také vést k redukci počtu úrovní. Například, pokud jsou výsledné hodnoty zaokrouhlovány na několik diskretních hodnot, zmenší se počet možných jasových úrovní.
+
+**Nelineární transformace**:
+- Některé nelineární transformace mohou vést na kompresi jasových úrovní nebo naopak. Například, kvadratická funkce může stlačit široký rozsah jasových úrovní na užší rozmezí.
+
+# 50. Uvažujte šedotónový obrázek. Ekvalizace histogramu se využívá pro zvýšení kontrastu lepším využitím jasové stupnice. Zvyšuje ekvalizace histogramu množství informace v obrazu, pokud bychom množství informace měřili Shannonovou entropií? Vysvětlete a uveďte příklady.
+Teoretickým cílem ekvalizace je dosáhnout rovnoměrného rozložení pravděpodobnosti (plochý histogram), což je stav s maximální možnou entropií pro daný rozsah jasu.
+
+Nicméně u diskrétního digitálního obrazu narážíme na limit. Protože nemůžeme štěpit pixely stejné hodnoty, histogram nikdy nebude dokonale plochý. Prostým přeuspořádáním hodnot (permutací) se entropie nezvyšuje, a vlivem kvantizace (slévání hladin) může ve skutečnosti dokonce mírně klesnout. Ale vizuálně se informace 'rozprostře' lépe pro lidské oko.
+
+# 51. Nechť je geometrická transformace (zahrnující změnu měřítka, rotaci, posun a zkosení) v rovině popsána afinním vztahem
+# x′ = a0 + a1x + a2y ,
+# y′ = b0 + b1x + b2y . (1)
+# (a) Kolik nejméně vlícovacích bodů potřebujete znát, chcete-li spočítat koeficienty afinní transformace (1). (b) V praxi se obvykle použije více vlícovacích bodů, což bude odpovídat přeurčené soustavě rovnic (1). Proč se používá nadbytečný počet vlícovacích bodů? (c) Jakou metodou se obvykle přeurčená soustava rovnic řeší?
+
+## A) 
+**Správná odpověď**: 3 body.
+
+**Vysvětlení**: Afinní transformace má 6 neznámých koeficientů (a0​,a1​,a2​ a b0​,b1​,b2​). Každý vlicovací bod nám dá 2 rovnice (jednu pro souřadnici x′ a jednu pro y′).
+6 neznámý​ch/2 rovnice na bod=3 body.
+
+## B)
+transformace pouze odhaduje na základě vlícovacích bodů => více bodů = větší přesnost
+odstranění šumu
+
+## C)
+Použije se Metoda nejmenších čtverců (MNČ) – anglicky Least Squares Method. (Případně pomocí pseudoinverzní matice).
+- Tato metoda najde takové koeficienty transformace, aby součet čtverců chyb (vzdáleností mezi požadovanými a skutečnými polohami bodů) byl minimální.
+
+# 52. Při geometrických transformacích diskrétních obrazů je nutné aproximovat hodnotu obrazové funkce f(x, y). Proč? Uveďte alespoň dvě metody pro takovou aproximaci (nejlépe obrázkem, vzorcem . . . )
+Transformované souřadnice leží mimo pevně daný rastr.
+
+**Metoda nejbližšího souseda**:
+- přiřadí bodu x,y hodnotu jasu nejbližšího bodu g v diskrétní mřížce.
+
+**Lineární interpolace**:
+- využije okolí čtyř bodů sousedících se zpracovávaným bodem(x,y) a předpokládá, že
+obrazová funkce je lineární kombinací jasu těchto 4 bodů. Vliv každého ze čtyř bodů v
+lineární kombinaci je úměrný jeho blízkosti ke zpracovávanému bodu.
+
+# 53. Vysvětlete princip interpolace jasu po geometrické transformaci metodou nejbližšího souseda a lineární interpolací. Když nakreslíte obrázek, bude to pro Vás i mě snazší
+**Metoda nejbližšího souseda**:
+- přiřadí bodu x,y hodnotu jasu nejbližšího bodu g v diskrétní mřížce.
+
+**Lineární interpolace**:
+- využije okolí čtyř bodů sousedících se zpracovávaným bodem(x,y) a předpokládá, že
+obrazová funkce je lineární kombinací jasu těchto 4 bodů. Vliv každého ze čtyř bodů v
+lineární kombinaci je úměrný jeho blízkosti ke zpracovávanému bodu.
+
+# 54. Vysvětlete princip bikubické interpolace jasu po geometrické transformaci. Kolik vzorků obrazové funkce budete potřebovat? Když nakreslíte obrázek, bude to pro Vás i mě snazší.
+![54](imgs/54.png)
+
+Potřebujeme 16 vzorků (4*4) bereme sousedy sousedů
+
+V prvním kroku se interpoluje v jednom směru souřadnic čtyřmi 1D kubickými polynomy (čtyři
+modré křivky). Ve druhém kroku se najdou čtyři body (zelené body) odpovídající poloze (x, y).
+Tyto body se proloží jedním 1D kubickým polynomem a najde se hledaná hodnota (červený bod).
+
+# 55. Uvažujte filtraci náhodného aditivního šumu v obraze. Odhad správné hodnoty se může počítat jako aritmetický průměr n zašuměných hodnot. Kolikrát se po filtraci zmenší hodnota šumu vyjádřená směrodatnou odchylkou σ? Vysvětlete, jaký je statistický princip poklesu šumu (nápověda: centrální limitní věta).
+
+Pokles: Šum klesá s odmocninou z počtu snímků (√n​).
+
+Princip: Náhodný šum má kladné i záporné odchylky. Sčítáním (průměrováním) se tyto odchylky navzájem vyruší, zatímco užitečný signál (obraz) zůstává stejný a sčítá se.
+
+Věta: Centrální limitní věta zaručuje, že rozptyl (chyba) průměru je menší než rozptyl jednotlivých měření.
+
+# 56. Lze filtrovat šum v obraze obyčejným průměrováním z např. 21 vzorků, aniž by byl obraz po filtraci rozmazaný? Pokud ano, jak?
+Ano, lze.
+
+Jak: Nesmíme průměrovat okolní pixely v jedné fotce, ale musíme průměrovat stejný pixel napříč více snímky (v čase).
+
+Podmínka: Scéna i kamera musí být statické (nehybné).
+
+# 57. Na obrázku je výřez obrazové funkce. Tučně je ohraničeno okolí, ve kterém se má vypočítat filtrovaná hodnota, tj. filtrační maska. Vypočtěte filtrované hodnoty (a) při vyhlazování obyčejným průměrováním a (b) mediánovou filtrací pro právě zpracovávaný pixel ležící ve středu filtrační masky
+(a) vypočítám prostě průměr se všech pixelů a nahradím jím prostřední pixel (vyjde 4)
+(b) vypočítám medián z okolí: 0 0 0 0 0 0 **1** 1 1 4 15 15 15
+
+# 58. Uvažujte filtraci šumu v obraze realizovanou konvolucí s maskou rozměru 11 x 11, která aproximuje gaussovský filtr. Jedná se o lineární operaci? Zkuste své rozhodnutí matematicky zdůvodnit.
+
+Ano, je to lineární operace. Je homogenní i aditivní.
+
+# 58. Použití rekurzivních filtrů (IIR, nekonečná impulsní odezva) přináší pro 2D obrazy problémy, které se u 1D signálů nevyskytují. Proto se rekurzivní filtry pro obrazy téměř nepoužívají. Vysvětlete, co je příčinou problémů? (nápověda: kauzalita).
+Pro obrazy neexistuje přirozený směr, jakým byl čas pro 1D signály. Není principiální důvod proč
+by měl být některý směr preferován. Ve zpracování obrazů se dává přednost nekauzálním filtrům s
+nulovým fázovým posunem, a to proto, aby se v obraze neposouvaly hrany anebo jiné body
+významné pro další analýzu. Pro 1D filtry je vypracovaná teorie jasná pro vícerozměrné filtry tomu
+tak není, protože zobecnění Z-transformace do více dimenzí není snadné. Působí to základní
+problémy při návrhu rekurzivních filtrů a studiu jejich stability.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
