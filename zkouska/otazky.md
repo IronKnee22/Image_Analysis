@@ -1,5 +1,7 @@
 ⚠️✅
 
+115,116
+
 # 1. Jaké jsou rozdíly mezi analýzou obrazu (počítačovým viděním) na jedné straně a počítačovou grafikou na druhé straně? Uveďte dva příklady, které rozdíly demonstrují.✅
 Počítačové vidění se snaží napodobit lidské vidění snímáním obrazu elektronickými prostředky a
 porozuměním jejich obsahu počítačovým zpracováním(interpretací).U počítačového vidění je snaha
@@ -883,3 +885,113 @@ hranový bod se zohledňuje jeho lokální okolí, a to ve smyslu blízkých pix
 by mohly být spojeny, a tím vytvořit uzavřenou hranu. Podle kritérií, jako je podobnost intenzity
 nebo gradientu, jsou některé body spojeny a tím uzavřeny do hranice. Relaxace se snaží "vyhladit"
 nebo "propojit" hrany tam, kde byly původně přerušené nebo nespojité.
+
+# 111. Popište rozdíl mezi sémantickou, instanční a panoptickou segmentací na vhodném příkladě. Pro každou z těchto segmentací uveďte vhodný algoritmus.
+**Sémantická segmentace**: Každému pixelu přiřadíme třídu (auto), všechny auta ale budou patřit do stejné třídy a když se budou překrývat tak je nerozeznám
+- FCN (Konvoluční neuronové sítě)
+
+**Instanční segmentace**: Hledá jeno konkrétní počitatelné objekty (věci) kašle na pozadí, dokáže rozeznat každé auto zvlášť bude mít vlastní třídu
+- R-CNN - Regions s konvolučními sítěmi
+
+**Panoptická segmentace**: Kombinuje dvě předchozí
+- Panoptic Feature Pyramid Network
+
+# 112. Popište princip fungování CNN (konvoluční neuronové sítě) a konvoluce v ní.
+## Jak funguje
+**Hledání prvků (Konvoluce)**: Místo aby se síť dívala na celý obrázek naráz, posouvá po něm malé okénko (masku). Hledá jednoduché vzory
+
+**Zjednodušení (Pooling)**: Obrázek se zmenší. Pokud jsme našli "ucho" na ploše 10x10 pixelů, stačí nám informace "tady je ucho", nepotřebujeme všech 100 pixelů.
+
+**Rozhodnutí (Fully Connected)**: Na konci se síť podívá na seznam nalezených věcí (2x špičaté ucho, fousky, čumák) a rozhodne: "To je kočka na 98 %."
+
+## Princip Konvoluce
+**Filtr (Kernel)**: Představ si malou matici čísel (např. 3x3), které říkáme filtr. Tento filtr reprezentuje to, co hledáme (např. hranu).
+
+**Posouvání (Sliding)**: Tento filtr "klouže" po vstupním obrázku (zleva doprava, shora dolů).
+
+**Výpočet**: V každém kroku se čísla ve filtru vynásobí s čísly v obrázku pod ním a sečtou se (skalární součin).
+
+**Výsledek**: Pokud se vzor ve filtru shoduje s tím, co je na obrázku, vyjde velké číslo (vysoká aktivace). Vznikne nová matice zvaná Feature Map (mapa příznaků).
+
+# 113. Popište hyperparametry v CNN. Co tyto hyperparametry ovlivňují? Na následujícím příkladě demonstrujte použití poolingu (velikost 2 × 2, stride = 2)/
+Hyperparametry jsou nastavení sítě, která se neučí sama (na rozdíl od vah), ale musím je nastavit já (architekt sítě) před začátkem trénování. Ovlivňují to, jak síť "vidí", jak je rychlá a jak velký bude výstup.
+
+**Velikost Jádra** - velikost okénka ovlivnuje kolik detailů a kontextu filter vidí. Menší vidí detaily větší vidí souvislosti
+
+**Krok** - O kolik pixelů se filtr posune v každém kroku - ovlivňuje velikost výstupu větší stride obrázek zmenšuje
+
+**Odsazení (Padding)**Přidání prázdných pixelů okolo obrázku - aby filtr mohl zpracovat i kraje obrázků
+
+**Počet filtrů** kolik vzorů v dané vrstvě hledáme - více filtrů síť může najít složitější věci
+
+![113](imgs/113.png)
+
+Tady vždycky budu brát pole 2x2 z toho vezmu nejvyšší číslo a posunu se o dva vedle takže dostanu výsledek 2x2 Použil jsem max pooling
+
+![113](imgs/113_1.png)
+
+# 114. Vysvětlete princip metody k-průměrů (angl. k-means) a její základní vlastnosti. Jak se metoda použije pro segmentaci?
+Zvolí se k (počet shluků) a k centroidů (reprezentující středy shluků) náhodným výběrem nebo
+jiným způsobem. Pak se každý bod přiřadí k nejbližšímu centroidu a vytvoří se shluky. Dál se
+středy shluků posunou tak, aby byly průměrem všech bodů v shluku. Opakuje se tak dlouho, dokud
+se středy neustálí nebo do daného počtu iterací.
+
+Vlastnosti:
+- Nesupervizovaná metoda: Metoda k-průměrů je nesupervizovaným algoritmem, protože nevyžaduje označená trénovací data.
+- Citlivost k počátečním hodnotám: Výsledky k-průměrů mohou být citlivé na počáteční volbu centroidů. Proto je obvyklé algoritmus několikrát spustit s různými počátečními hodnotami a vybrat nejlepší výsledek.
+- Použití v segmentaci: Metoda k-průměrů lze použít pro segmentaci obrazu tím, že body v obraze (např., pixely) jsou vnímány jako datové body v prostoru rysů, a algoritmus je použit k seskupení podobných oblastí.
+- Efektivita: Je efektivní při zpracování velkých množství dat a nalezení skupin s podobnými vlastnostmi.
+
+# 115. Pro popis objektů v obrazech se používají globální a lokální metody. Porovnejte je a uveďte příklady dvou v každé kategorii.⚠️
+## Globální Metody:
+Globální metody analyzují celkové vlastnosti celého obrazu nebo celé oblasti najednou.
+Příklady:
+- Histogram barev: Reprezentuje celkové rozložení barev v obrazu. Každý kanál (RGB) má svůj histogram, který popisuje, jak jsou barvy rozloženy po celém obrazu.
+- Globální morfologické operace: Používají matematickou morfologii na celý obraz.
+
+Například operace dilatace nebo eroze, které ovlivňují celý obraz najednou.
+
+## Lokální Metody:
+Lokální metody se zaměřují na detaily a vlastnosti lokálních oblastí nebo pixelů v obraze.
+Příklady:
+- Lokální binarizace: Aplikuje různé prahovací hodnoty na různé oblasti obrazu na základě lokálních charakteristik. Pomáhá zachytit detaily v různě osvětlených částech obrazu.
+- Texturové deskriptory: Využívají informace o struktuře a vzorech v lokálních částech obrazu. Například Gaborovy filtry mohou zachytit texturu v malých oblastech.
+
+# 116. Vysvětlete dva základní postupy barvení oblastí. Je to metoda, která z binárního obrazu, výsledku segmentace např. prahováním, označí jedinečnou značkou (např. číslem, barvou) každou segmentovanou oblast.⚠️
+**Procházení do hloubky (Flood Fill)**: Najde pixel a šíří se po všech jeho sousedech, dokud neoznačí celý objekt.
+
+**Dvouprůchodový algoritmus**: V prvním průchodu dává dočasná čísla a zaznamenává, které části k sobě patří (tabulka ekvivalentů), ve druhém průchodu čísla sjednotí.
+
+# 117. K čemu konverguje plocha oblasti (v m2 ) a obvod oblasti (v m) v diskrétním obraze při rostoucím rozlišení? Nápověda: Představte si posloupnost družicových snímků povrchu Země o rostoucím rozlišení a konkrétní objekt s křivočarou hranicí (např. skalnaté mořské pobřeží).
+Plocha oblasti (m2):
+- Konvergence: Plocha skutečně konverguje k reálné (spojité) hodnotě.
+- Vysvětlení: S rostoucím rozlišením se čtvercové pixely stále přesněji "vyskládají" do vnitřku objektu. Chyba měření na okrajích se zmenšuje úměrně velikosti pixelu a limitně se blíží nule.
+
+Obvod oblasti (m):
+- Konvergence: Obvod nekonverguje k reálné hodnotě, pokud jej měříme jako délku hranice pixelů.
+- Vysvětlení (Steinhausův paradox / Richardsonův efekt): Pokud měříme obvod jako součet hran pixelů (kroky vodorovně a svisle), pak i při nekonečném rozlišení bude délka "zubaté" čáry vždy delší než skutečná přímá vzdálenost (např. u úhlopříčky je to 2​≈1,41 krát více).
+- jsou tam schody pixelů
+
+# 118. Oblíbeným příznakem popisujícím tvar oblasti (např. objektu ve 2D obraze po segmentaci) je kompaktnost (někdy se jí říká i nekompaktnost). Definujte, co je kompaktnost. Jak se kompaktnost mění při změně rozlišení? Proč?
+Kompaktnost je příznak popisující tvar oblasti v 2D obraze nebo ve 3D prostoru. Je to míra, jak
+efektivně je obsah oblasti distribuován vzhledem k jejímu obvodu. V podstatě měří, nakolik se
+oblast blíží k tvaru kruhu (nebo koule ve 3D) – čím více se k tomuto tvaru přibližuje, tím vyšší má
+kompaktnost. Při změně rozlišení se kompaktnost oblasti může měnit. Pokud zvyšujeme rozlišení,
+můžeme zachytit více detailů a zakřivení hranic, což může vytvořit oblasti s většími
+nepravidelnostmi. Naopak, při nižším rozlišení může docházet k zjednodušení tvarů a k vyhlazení
+detailů, což může vést ke snížení nepravidelností a zvýšení kompaktnosti.
+
+# 119. Vysvětlete princip řetězového kódu pro popis hranic oblasti. Nakreslete oblast neobdélníkového tvaru o nejméně sedmi pixelech ve čtvercovém rastru s definovaným osmiokolím. Napište odpovídající řetězový kód a derivaci řetězového kódu.
+Princip řetězového kódu spočívá v reprezentaci hranice oblasti pomocí sledu kódových hodnot,
+které popisují pořadí průchodu hranice jednotlivými pixely. Tato reprezentace umožňuje kompaktní
+zápis a snadnou identifikaci tvarů.
+Představme si neobdélníkovou oblast ve čtvercovém rastru o nejméně sedmi pixelech s
+definovaným osmiokolím. Označme pixely jako čtverce a spojme jejich středy čárami, abychom
+vytvořili neobdélníkový tvar. Procházíme hranici oblasti v definovaném směru (např. v hodinovém
+směru), zaznamenáváme kódové hodnoty pro každý pixel, přičemž používáme určený směr.
+Předpokládejme, že začínáme v levém horním rohu a jdeme v hodinovém směru. Kódy by mohly
+být následující: 2,2,3,4,5,6,6,6,5,4,3,3,3,2 První kód (2) odpovídá prvnímu pixelu, a pak
+pokračujeme v kódování podle průchodu hranice.
+Derivace řetězového kódu vyjadřuje změny mezi jednotlivými kódy a indikuje, kde se nacházejí
+záhyby nebo vrcholy na hranici. Například by mohla vypadat takto: 0,1,1,1,1,0,0,−1,−1,−1,0,0,0,0
+
